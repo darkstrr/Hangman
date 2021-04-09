@@ -7,6 +7,10 @@ import Word from './Word';
 import { showNotification as show, checkWin } from './helpers';
 import io from 'socket.io-client';
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import './App.css';
 
 const socket = io();
@@ -19,32 +23,34 @@ function App() {
   const [wrongLetters, setWrongLetters] = useState([]);
   
   useEffect(() => {
-
   }, []);
 
   return (
-    <div className="App container text-center">
-      <div className="row">
-        <div className="col-12">
+    <Container className="App text-center">  
+      <Row className="mt-5">
+        <Col>
+          <Header />
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col>
           <Figure wrongLetters={wrongLetters} />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-        <Word selectedWord={selectedWord} correctLetters={correctLetters} />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-        <WrongLetters wrongLetters={wrongLetters} />
-        </div>
-      </div>
-      <div className="row mt-5">
-        <div className="col-12">
-        <Guesser />
-        </div>
-      </div>
-    </div>
+        </Col>
+        <Col>
+          <WrongLetters wrongLetters={wrongLetters} />
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col>
+          <Word selectedWord={selectedWord} correctLetters={correctLetters} />
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col xs={{ span: 2, offset: 5 }}>
+          <Guesser />
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

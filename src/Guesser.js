@@ -4,16 +4,16 @@ import Button from 'react-bootstrap/Button';
 
 function Guesser() {
   return (
-    <InputGroup className="mb-3">
-    <FormControl
-      placeholder="Guess a letter!"
-      aria-label="Recipient's username"
-      aria-describedby="basic-addon2"
-    />
-    <InputGroup.Append>
+    <div className="guesser-container">
+      <label htmlFor="basic-url">Enter a Letter!</label>
+      <InputGroup className="mb-3">
+        <FormControl
+          aria-label="guess a letter"
+          aria-describedby="basic-addon2"
+        />
+      </InputGroup>
       <Button variant="secondary">Submit</Button>
-    </InputGroup.Append>
-  </InputGroup>
+    </div>
   );
 }
 
