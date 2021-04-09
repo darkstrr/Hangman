@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import Header from './Header';
 import Guesser from './Guesser';
@@ -16,9 +16,13 @@ const socket = io();
 const words = ['cat', 'dog', 'pig']
 let selectedWord = words[Math.floor(Math.random() * words.length)];
 
+
 function App() {
+  const [guess, setGuess] = useState([]);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
+  const inputRef = useRef(null);
+  
   
   useEffect(() => {
   }, []);
