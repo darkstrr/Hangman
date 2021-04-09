@@ -1,17 +1,15 @@
-import React, { useState, useEffect, userRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
 import Header from './Header';
 import Guesser from './Guesser';
 import Figure from './Figure';
 import WrongLetters from './Incorrect';
 import Word from './Word';
-import { showNotification as show, checkWin } from './helpers';
-import io from 'socket.io-client';
+import './App.css';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-import './App.css';
 
 const socket = io();
 
