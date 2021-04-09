@@ -1,6 +1,4 @@
 import { React, useRef } from 'react';
-import { io } from 'socket.io-client';
-import PropTypes from 'prop-types';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
@@ -12,7 +10,8 @@ function Guesser(props) {
   function onGuess(){
     if (inputRef && inputRef.current.value.length === 1) {
       const guess = inputRef.current.value;
-      // setGuess(user);
+      console.log(guess);
+    //   // setGuess(user);
       props.socket.emit('guess', guess);
     }
   }
@@ -31,9 +30,5 @@ function Guesser(props) {
     </div>
   );
 }
-
-Guesser.propTypes = {
-  socket: PropTypes.objectOf(io).isRequired,
-};
 
 export default Guesser;

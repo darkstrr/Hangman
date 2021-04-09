@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   return (
-    <Container className="App text-center">  
+    <Container className="text-center">  
       <Row className="mt-5">
         <Col>
           <Header />

@@ -8,9 +8,8 @@ import random
 GUESSES = []
 CORRECT = []
 INCORRECT = []
-WORDS = []
-# SELECT = random.randint(0,len(words))
-# WORD = words[select]
+WORDS = ['dog', 'cat', 'mouse', 'pig']
+SELECTED_WORD = WORDS[random.randint(0, len(WORDS) - 1)]
 
 APP = Flask(__name__, static_folder='./build/static')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -47,19 +46,25 @@ def on_disconnect():
     print('User disconnected!')
 
 @SOCKET_IO.on('guess')
-def on_guess(data): 
+def on_guess(guess): 
     """
     Called a guess is submitted. Checks to see if the guess is correct or incorrect.
     """
-    print('in here')
-    print(data)
-    # check(str(data))
+    print('correct word: ' + SELECTED_WORD)
+    print(type(guess))
+    check(guess)
     # stuff = {
     #     'correct':correct,
     #     'incorrect':incorrect,
     #     'guesses':guesses
     # }
     # socketio.emit('guess', stuff, broadcast=True, include_self=True)
+
+def check(guess):
+    if guess in SELECTED_WORD:
+        print('correct')
+    else:
+        print('incorrect')
 
 if __name__ == "__main__":
     SOCKET_IO.run(
