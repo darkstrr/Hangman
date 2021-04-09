@@ -4,64 +4,66 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 import random
 
-app = Flask(__name__, static_folder='./build/static')
-guesses = []
-correct = []
-incorrect = []
-words = []
-select = random.randint(0,len(words))
-word = words[select]
+# Global Variables
+GUESSES = []
+CORRECT = []
+INCORRECT = []
+WORDS = []
+# SELECT = random.randint(0,len(words))
+# WORD = words[select]
 
-# Gets rid of a warning
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(
-    app,
+APP = Flask(__name__, static_folder='./build/static')
+APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+CORS = CORS(APP, resources={r"/*": {"origins": "*"}})
+
+SOCKET_IO = SocketIO(
+    APP,
     cors_allowed_origins="*",
     json=json,
     manage_session=False
 )
 
-@app.route('/', defaults={"filename": "index.html"})
-@app.route('/<path:filename>')
+@APP.route('/', defaults={"filename": "index.html"})
+@APP.route('/<path:filename>')
 def index(filename):
+    """
+    End point to serve web application
+    """
     return send_from_directory('./build', filename)
 
-def check(guess):
-    guess.append(guess)
-    if guess in words:
-        correct.append(guess)
-    else:
-        incorrect.append(guess)
-
-# When a client connects from this Socket connection, this function is run
-@socketio.on('connect')
+@SOCKET_IO.on('connect')
 def on_connect():
+    """
+    Called a socket connects
+    """
     print('User connected!')
 
-# When a client disconnects from this Socket connection, this function is run
-@socketio.on('disconnect')
+@SOCKET_IO.on('disconnect')
 def on_disconnect():
+    """
+    Called a socket disconnects
+    """
     print('User disconnected!')
 
-# When a client emits the event 'chat' to the server, this function is run
-# 'chat' is a custom event name that we just decided
-@socketio.on('guess')
-def on_guess(data): # data is whatever arg you pass in your emit call on client
-    print(str(data))
-    check(str(data))
-    stuff = {
-        'correct':correct,
-        'incorrect':incorrect,
-        'guesses':guesses
-    }
-    socketio.emit('guess', stuff, broadcast=True, include_self=True)
+@SOCKET_IO.on('guess')
+def on_guess(data): 
+    """
+    Called a guess is submitted. Checks to see if the guess is correct or incorrect.
+    """
+    print('in here')
+    print(data)
+    # check(str(data))
+    # stuff = {
+    #     'correct':correct,
+    #     'incorrect':incorrect,
+    #     'guesses':guesses
+    # }
+    # socketio.emit('guess', stuff, broadcast=True, include_self=True)
 
-# Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":
-# Note that we don't call app.run anymore. We call socketio.run with app arg
-    socketio.run(
-        app,
+    SOCKET_IO.run(
+        APP,
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
     )

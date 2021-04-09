@@ -49,7 +49,7 @@ function App() {
       </Row>
       <Row className="mt-5">
         <Col xs={{ span: 2, offset: 5 }}>
-          <Guesser />
+          <Guesser socket={socket}/>
         </Col>
       </Row>
     </Container>
