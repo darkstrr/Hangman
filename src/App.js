@@ -13,7 +13,6 @@ import Col from 'react-bootstrap/Col';
 import CategorySelect from './CategorySelect';
 
 const socket = io();
-let isListening = false;
 
 function App() {
   const [categories, setCategories] = useState([]);
