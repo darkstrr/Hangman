@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import Header from './Header';
 import Guesser from './Guesser';
@@ -13,22 +13,34 @@ import Col from 'react-bootstrap/Col';
 import CategorySelect from './CategorySelect';
 
 const socket = io();
-
-const words = ['cat', 'dog', 'pig']
-let selectedWord = words[Math.floor(Math.random() * words.length)];
-
+let isListening = false;
 
 function App() {
   const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState(null);
   const [generatedWord, setGeneratedWord] = useState(null);
-  const [guess, setGuess] = useState([]);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
+  const [status, setStatus] = useState('');
+
 
 
   function onSelectCategory(category) {
     setCategorySelected(category);
+  }
+
+  function checkWin(correct, wrong, word) {
+    let status = 'win';
+    // Check for win
+    word.split('').forEach(letter => {
+      if(!correct.includes(letter)){
+        status = '';
+      }
+    });
+    // Check for lose
+    if(wrong.length === 6) status = 'lose';
+  
+    return status
   }
   
   
@@ -42,10 +54,15 @@ function App() {
     })
     socket.on("handle guess", guessData => {
       if (guessData.isCorrect) {
-        setCorrectLetters((prevLetters) => [...prevLetters, guessData.guess]);
+        setCorrectLetters(guessData.correctLetters);
       } else if (!guessData.isCorrect) {
-        setWrongLetters((prevLetters) => [...prevLetters, guessData.guess]);
+        setWrongLetters(guessData.wrongLetters);
       }
+      setStatus(checkWin(
+        guessData.correctLetters, 
+        guessData.wrongLetters, 
+        guessData.word
+      ));
     })
   }, []);
 
@@ -54,6 +71,16 @@ function App() {
       socket.emit('generate word', categorySelected);
     }
   }, [categorySelected]);
+
+  useEffect(() => {
+    if (status === 'win') {
+      // emit win event
+      // reset app global variables
+    } else if (status === 'lose') {
+      // emit lose event
+      // reset app global variables
+    }
+  }, [status]);
 
   if (!categorySelected || !generatedWord) {
     return (

@@ -90,15 +90,26 @@ def on_guess(guess):
     """
     Called after a guess is submitted. Checks to see if the guess is correct or incorrect.
     """
+    global CORRECT, INCORRECT, SELECTED_WORD
     print('correct word: ' + SELECTED_WORD)
     print(type(guess))
     correct = check(guess)
-    SOCKET_IO.emit('handle guess', {'guess': guess, 'isCorrect': correct}, broadcast=True)
+    guessData = {
+        'guess': guess, 
+        'isCorrect': correct,
+        'wrongLetters': INCORRECT,
+        'correctLetters': CORRECT,
+        'word': SELECTED_WORD
+    }
+    SOCKET_IO.emit('handle guess', guessData, broadcast=True)
 
 def check(guess):
+    global CORRECT, INCORRECT
     if guess in SELECTED_WORD:
+        CORRECT.append(guess)
         return True
     else:
+        INCORRECT.append(guess)
         return False
 
 if __name__ == "__main__":
