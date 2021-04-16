@@ -71,16 +71,19 @@ def on_connect():
 @SOCKET_IO.on('disconnect')
 def on_disconnect():
     """
-    Called a socket disconnects
+    Called after a socket disconnects
     """
     print('User disconnected!')
 
 @SOCKET_IO.on('generate word')
 def on_generate_word(category):
     """
-    Called a socket disconnects
+    Called when a category is selected
     """
-    print(category)
+    global WORDS
+    word_bank = WORDS[category]
+    word = word_bank[random.randint(0, len(word_bank) - 1)]
+    print(word)
 
 @SOCKET_IO.on('guess')
 def on_guess(guess): 
