@@ -10,8 +10,7 @@ import './App.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import CategorySelect from './CategorySelect';
 
 const socket = io();
 
@@ -26,10 +25,9 @@ function App() {
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
 
-  const selectRef = useRef(null);
 
-  function onSelectCategory() {
-    setCategorySelected(selectRef.current.value);
+  function onSelectCategory(category) {
+    setCategorySelected(category);
   }
   
   
@@ -38,6 +36,13 @@ function App() {
       setCategories(categories);
     })
   }, []);
+
+  useEffect(() => {
+    if (categorySelected) {
+      console.log('sending category', categorySelected)
+      socket.emit('generate word', categorySelected);
+    }
+  }, [categorySelected]);
 
   if (!categorySelected) {
     return (
@@ -52,23 +57,7 @@ function App() {
             <h3>Please select a category</h3>
           </Col>
         </Row>
-        <Row className="mt-5 w-25 m-auto">
-          <Col>
-            <Form>
-              <Form.Group as={Col} controlId="formGridState">
-                <Form.Label>Categories</Form.Label>
-                <Form.Control as="select" ref={selectRef}>
-                  {categories.map((category, i) => (
-                    <option key={i}>{category}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-              <Button variant="light" type="button" onClick={onSelectCategory}>
-                Select Category
-              </Button>
-            </Form>
-          </Col>
-        </Row>
+        <CategorySelect categories={categories} onSelectCategory={onSelectCategory} />
       </Container>
     );
   } else {

@@ -75,6 +75,13 @@ def on_disconnect():
     """
     print('User disconnected!')
 
+@SOCKET_IO.on('generate word')
+def on_generate_word(category):
+    """
+    Called a socket disconnects
+    """
+    print(category)
+
 @SOCKET_IO.on('guess')
 def on_guess(guess): 
     """
