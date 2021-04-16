@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Word = ({ generatedWord, correctLetters }) => {
-  console.log(generatedWord);
 
   return (
     <div className="word">

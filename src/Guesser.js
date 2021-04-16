@@ -10,7 +10,6 @@ function Guesser(props) {
   function onGuess(){
     if (inputRef && inputRef.current.value.length === 1) {
       const guess = inputRef.current.value;
-      console.log(guess);
     //   // setGuess(user);
       props.socket.emit('guess', guess);
     }

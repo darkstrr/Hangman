@@ -37,7 +37,7 @@ WORDS = {
     ]
 }
 SELECTED_CATEGORY = CATEGORIES[random.randint(0, len(CATEGORIES) - 1)]
-SELECTED_WORD = SELECTED_CATEGORY[0]
+SELECTED_WORD = ''
 GAME_IN_PROGRESS = False
 
 APP = Flask(__name__, static_folder='./build/static')
@@ -80,10 +80,10 @@ def on_generate_word(category):
     """
     Called when a category is selected
     """
-    global WORDS
+    global WORDS, SELECTED_WORD
     word_bank = WORDS[category]
-    word = word_bank[random.randint(0, len(word_bank) - 1)]
-    SOCKET_IO.emit('word generated', word, broadcast=True)
+    SELECTED_WORD = word_bank[random.randint(0, len(word_bank) - 1)]
+    SOCKET_IO.emit('word generated', SELECTED_WORD, broadcast=True)
 
 @SOCKET_IO.on('guess')
 def on_guess(guess): 
@@ -92,19 +92,14 @@ def on_guess(guess):
     """
     print('correct word: ' + SELECTED_WORD)
     print(type(guess))
-    check(guess)
-    # stuff = {
-    #     'correct':correct,
-    #     'incorrect':incorrect,
-    #     'guesses':guesses
-    # }
-    # socketio.emit('guess', stuff, broadcast=True, include_self=True)
+    correct = check(guess)
+    SOCKET_IO.emit('handle guess', {'guess': guess, 'isCorrect': correct}, broadcast=True)
 
 def check(guess):
     if guess in SELECTED_WORD:
-        print('correct')
+        return True
     else:
-        print('incorrect')
+        return False
 
 if __name__ == "__main__":
     SOCKET_IO.run(

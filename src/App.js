@@ -38,11 +38,19 @@ function App() {
     })
     socket.on("word generated", word => {
       setGeneratedWord(word);
+      setCategorySelected(true);
+    })
+    socket.on("handle guess", guessData => {
+      if (guessData.isCorrect) {
+        setCorrectLetters((prevLetters) => [...prevLetters, guessData.guess]);
+      } else if (!guessData.isCorrect) {
+        setWrongLetters((prevLetters) => [...prevLetters, guessData.guess]);
+      }
     })
   }, []);
 
   useEffect(() => {
-    if (categorySelected) {
+    if (categorySelected && typeof categorySelected === 'string') {
       socket.emit('generate word', categorySelected);
     }
   }, [categorySelected]);
