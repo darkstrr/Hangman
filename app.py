@@ -8,8 +8,37 @@ import random
 GUESSES = []
 CORRECT = []
 INCORRECT = []
-WORDS = ['dog', 'cat', 'mouse', 'pig']
-SELECTED_WORD = WORDS[random.randint(0, len(WORDS) - 1)]
+CATEGORIES = ['animals', 'food', 'programming languages']
+WORDS = {
+    'animals': [
+        'dog', 
+        'pig', 
+        'cat', 
+        'cow', 
+        'bat', 
+        'aligator', 
+        'pigeon',
+        'Gorilla'
+    ],
+    'food': [
+        'pizza',
+        'mushroom',
+        'beans',
+        'shrimp',
+        'potato'
+    ],
+    'programming languages': [
+        'ada',
+        'python',
+        'java',
+        'javascript',
+        'fortran',
+        'cobol'
+    ]
+}
+SELECTED_CATEGORY = CATEGORIES[random.randint(0, len(CATEGORIES) - 1)]
+SELECTED_WORD = SELECTED_CATEGORY[0]
+GAME_IN_PROGRESS = False
 
 APP = Flask(__name__, static_folder='./build/static')
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -34,9 +63,10 @@ def index(filename):
 @SOCKET_IO.on('connect')
 def on_connect():
     """
-    Called a socket connects
+    Called when a socket connects
     """
-    print('User connected!')
+    global CATEGORIES
+    SOCKET_IO.emit('categories', CATEGORIES, broadcast=True)
 
 @SOCKET_IO.on('disconnect')
 def on_disconnect():
