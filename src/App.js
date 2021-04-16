@@ -21,6 +21,7 @@ let selectedWord = words[Math.floor(Math.random() * words.length)];
 function App() {
   const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState(null);
+  const [generatedWord, setGeneratedWord] = useState(null);
   const [guess, setGuess] = useState([]);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
@@ -35,16 +36,18 @@ function App() {
     socket.on("categories", categories => {
       setCategories(categories);
     })
+    socket.on("word generated", word => {
+      setGeneratedWord(word);
+    })
   }, []);
 
   useEffect(() => {
     if (categorySelected) {
-      console.log('sending category', categorySelected)
       socket.emit('generate word', categorySelected);
     }
   }, [categorySelected]);
 
-  if (!categorySelected) {
+  if (!categorySelected || !generatedWord) {
     return (
       <Container className="text-center">  
         <Row className="mt-5">
@@ -78,7 +81,7 @@ function App() {
         </Row>
         <Row className="mt-5">
           <Col>
-            <Word selectedWord={selectedWord} correctLetters={correctLetters} />
+            <Word generatedWord={generatedWord} correctLetters={correctLetters} />
           </Col>
         </Row>
         <Row className="mt-5">

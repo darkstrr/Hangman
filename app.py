@@ -18,7 +18,7 @@ WORDS = {
         'bat', 
         'aligator', 
         'pigeon',
-        'Gorilla'
+        'gorilla'
     ],
     'food': [
         'pizza',
@@ -83,12 +83,12 @@ def on_generate_word(category):
     global WORDS
     word_bank = WORDS[category]
     word = word_bank[random.randint(0, len(word_bank) - 1)]
-    print(word)
+    SOCKET_IO.emit('word generated', word, broadcast=True)
 
 @SOCKET_IO.on('guess')
 def on_guess(guess): 
     """
-    Called a guess is submitted. Checks to see if the guess is correct or incorrect.
+    Called after a guess is submitted. Checks to see if the guess is correct or incorrect.
     """
     print('correct word: ' + SELECTED_WORD)
     print(type(guess))
